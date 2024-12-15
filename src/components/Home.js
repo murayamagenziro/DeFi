@@ -37,11 +37,9 @@ class App extends Component {
     async loadBlockchainData() {
         const web3 = window.web3;
         const accounts = await web3.eth.getAccounts();
-        this.setState({ account: accounts[0] });
-        console.log("Account[0]", accounts[0])
+        this.setState({ account: accounts[0] });        
         // Ganache -> 5777, Rinkeby -> 4, BSC -> 97
-        const networkId = await web3.eth.net.getId();
-        console.log("networkid:", networkId);
+        const networkId = await web3.eth.net.getId();        
 
         // Carga del JamToken
         const jamTokenData = JamToken.networks[networkId];        
@@ -61,12 +59,23 @@ class App extends Component {
             const stellartToken = new web3.eth.Contract(StellartToken.abi, stellartTokenData.address);
             this.setState({stellartToken: stellartToken});
             let stellartTokenBalance = await stellartToken.methods.balanceOf(this.state.account).call();
-            this.setState({stellartTokenBalance: stellartTokenBalance.toString()});
-            console.log(stellartTokenBalance);
+            this.setState({stellartTokenBalance: stellartTokenBalance.toString()});            
         } else {
             window.alert("El StellartToken no se ha desplegado en la red")
         }
 
+        // Carga del TokeFarm
+        const tokenFarmData = TokenFarm.networks[networkId];
+        if (tokenFarmData) {
+            const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address);
+            this.setState({tokenFarm: tokenFarm});
+            let stakingBalance = tokenFarm.methods.stakingBalance(this.state.account).call();
+            this.setState({stakingBalance: stakingBalance.toString()})
+
+        } else {
+            window.alert("El TokenFarm no se ha desplegado en la red")
+        }
+        this.setState({loading: false});
     }
 
     constructor(props) {
@@ -78,6 +87,8 @@ class App extends Component {
             jamTokenBalance: '0',
             stellartToken: {},
             stellartTokenBalance: '0',
+            tokenFarm: {},
+            stakingBalance: '0',
         };
     }
 
