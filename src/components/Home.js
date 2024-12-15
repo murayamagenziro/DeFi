@@ -47,13 +47,26 @@ class App extends Component {
         const jamTokenData = JamToken.networks[networkId];        
         if (jamTokenData) {
             const jamToken = new web3.eth.Contract(JamToken.abi, jamTokenData.address);
-            this.setState({jamToken: jamToken})
-            let jamTokenBalance = await jamToken.methods.balanceOf(this.state.account).call()
-            this.setState({jamTokenBalance: jamTokenBalance.toString()})
+            this.setState({jamToken: jamToken});
+            let jamTokenBalance = await jamToken.methods.balanceOf(this.state.account).call();
+            this.setState({jamTokenBalance: jamTokenBalance.toString()});
 
         } else {
             window.alert("El JamToken no se ha desplegado en la red")
         }
+
+        // Carga del StellartToken
+        const stellartTokenData = StellartToken.networks[networkId];        
+        if (stellartTokenData) {
+            const stellartToken = new web3.eth.Contract(StellartToken.abi, stellartTokenData.address);
+            this.setState({stellartToken: stellartToken});
+            let stellartTokenBalance = await stellartToken.methods.balanceOf(this.state.account).call();
+            this.setState({stellartTokenBalance: stellartTokenBalance.toString()});
+            console.log(stellartTokenBalance);
+        } else {
+            window.alert("El StellartToken no se ha desplegado en la red")
+        }
+
     }
 
     constructor(props) {
@@ -62,7 +75,9 @@ class App extends Component {
             account: "0x0",
             loading: true,
             jamToken: {},
-            jamTokenBalance: '0'
+            jamTokenBalance: '0',
+            stellartToken: {},
+            stellartTokenBalance: '0',
         };
     }
 
