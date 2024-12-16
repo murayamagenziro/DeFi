@@ -7212,12 +7212,12 @@
         }
       },
       "links": {},
-      "address": "0x1697e7CBAebD07f262cc11849d6Cf96a6e318d25",
-      "transactionHash": "0x459f159131868b3e4e24b4d39e6a801ef69c0adb0ec3dafed3b5eb6ee721d56b"
+      "address": "0xCb7C9BE96627afBCE26a14A32E61E75f75F50F56",
+      "transactionHash": "0x5bc26e93bbd6f9791e777e8363ce86e877a62b2bd9bbbbe82559d8b374058d59"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-12-15T14:35:45.675Z",
+  "updatedAt": "2024-12-16T11:36:32.295Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

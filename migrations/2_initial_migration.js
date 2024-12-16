@@ -20,9 +20,9 @@ module.exports = async function(deployer, network, accounts) {
     const tokenFarm = await TokenFarm.deployed()
 
     // Transferir tokens a TokenFarm (1_000_000 de tokens)
-    await stellartToken.transfer(tokenFarm.address, 1e18.toString())
+    await stellartToken.transfer(tokenFarm.address, '1000000000000000000000000')
 
-    // Transferencia de los tokens para el Staking
-    await jamToken.transfer(accounts[1], 1e18.toString())
+    // Transferencia de los tokens para el Staking, dejamos una cierta cantidad de tokens en el contrato
+    await jamToken.transfer(accounts[0], 1e12.toString())
 
 }

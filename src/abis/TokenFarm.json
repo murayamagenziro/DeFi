@@ -9231,12 +9231,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x8B4487c25b47514B0A3fD339A1b43B83Bb7FfCdc",
-      "transactionHash": "0x62ff7604b1e74f3503ae1b154da1651f0779a9c0b9bb0df4ec2fa12d0a3f8640"
+      "address": "0x45dA8C2F41bD64A55Ea0aFD2DBB6893637aD8Cd5",
+      "transactionHash": "0x30d67952988ebdbb8d041a0a81218ce351cc8d004a91c0fa714429013c67e8b8"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-12-15T14:35:45.719Z",
+  "updatedAt": "2024-12-16T11:36:32.400Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
