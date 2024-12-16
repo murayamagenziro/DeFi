@@ -9,6 +9,7 @@ import Web3 from "web3";
 
 import Navigation from "./Navbar";
 import MyCarousel from "./Carousel";
+import Main from './Main';
 
 class App extends Component {
     async componentDidMount() {
@@ -22,10 +23,10 @@ class App extends Component {
     async loadWeb3() {
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum);
-            const accounts = await window.ethereum.request({
-                method: "eth_requestAccounts",
-            });
-            console.log("Accounts: ", accounts);
+            // const accounts = await window.ethereum.request({
+            //     method: "eth_requestAccounts",
+            // });
+            // console.log("Accounts: ", accounts);
         } else if (window.web3) {
             window.web3 = new Web3(window.web3.currentProvider);
         } else {
@@ -36,7 +37,7 @@ class App extends Component {
     // 2. Carga de datos de la Blockchain
     async loadBlockchainData() {
         const web3 = window.web3;
-        const accounts = await web3.eth.getAccounts();
+        const accounts = await web3.eth.getAccounts();        
         this.setState({ account: accounts[0] });        
         // Ganache -> 5777, Rinkeby -> 4, BSC -> 97
         const networkId = await web3.eth.net.getId();        
@@ -58,7 +59,7 @@ class App extends Component {
         if (stellartTokenData) {
             const stellartToken = new web3.eth.Contract(StellartToken.abi, stellartTokenData.address);
             this.setState({stellartToken: stellartToken});
-            let stellartTokenBalance = await stellartToken.methods.balanceOf(this.state.account).call();
+            let stellartTokenBalance = await stellartToken.methods.balanceOf(this.state.account).call();            
             this.setState({stellartTokenBalance: stellartTokenBalance.toString()});            
         } else {
             window.alert("El StellartToken no se ha desplegado en la red")
@@ -68,14 +69,30 @@ class App extends Component {
         const tokenFarmData = TokenFarm.networks[networkId];
         if (tokenFarmData) {
             const tokenFarm = new web3.eth.Contract(TokenFarm.abi, tokenFarmData.address);
-            this.setState({tokenFarm: tokenFarm});
-            let stakingBalance = tokenFarm.methods.stakingBalance(this.state.account).call();
+            this.setState({tokenFarm: tokenFarm});            
+            let stakingBalance = await tokenFarm.methods.stakingBalance(this.state.account).call();
             this.setState({stakingBalance: stakingBalance.toString()})
 
         } else {
             window.alert("El TokenFarm no se ha desplegado en la red")
         }
         this.setState({loading: false});
+    }
+
+    stakeTokens = (amount) => {
+        this.setState({loading: true});
+        this.state.jamToken.methods.approve(this.state.tokenFarm._address, amount).send({from: this.state.account}).on('transactionHash', (hash) => {
+            this.state.tokenFarm.methods.stakeTokens(amount).send({from: this.state.account}).on('transactionHash', (hash) =>{
+                this.setState({loading: false})
+            })
+        })
+    }
+
+    unstakeTokens = (amount) => {
+        this.setState({loading: true});
+        this.state.tokenFarm.methods.unstakeTokens().send({from: this.state.account}).on('transactionHash', (hash) => {
+            this.setState({loading: false})
+        })
     }
 
     constructor(props) {
@@ -93,6 +110,18 @@ class App extends Component {
     }
 
     render() {
+        let content;
+        if (this.state.loading) {
+            content = <p id="loader" className='text-center'>Loading...</p>
+        } else {
+            content = <Main
+                jamTokenBalance={this.state.jamTokenBalance}
+                stellartTokenBalance={this.state.stellartTokenBalance}
+                stakingBalance={this.state.stakingBalance}
+                stakeTokens={this.stakeTokens}
+                unstakeTokens={this.unstakeTokens}
+            />
+        }
         return (
             <div>
                 <Navigation account={this.state.account} />
@@ -103,6 +132,7 @@ class App extends Component {
                             role="main"
                             className="col-lg-12 d-flex text-center"
                         >
+                            {content}
                             <div className="content mr-auto ml-auto"></div>
                         </main>
                     </div>
